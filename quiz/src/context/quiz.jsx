@@ -1,4 +1,4 @@
-import {createContext,useReducer} from 'react'
+import {act, createContext,useReducer} from 'react'
 import questions  from '../Data/questions'
 
 const stages =['Start','Playing','End']
@@ -13,6 +13,9 @@ const InitialStage = {
     gameStage: stages[0],
     questions,
     currentQuestion: 0,
+    score:0,
+    //Isso aqui vai servir para ver se o usuario selecionou uma opção, se ele selecionar, ele consegue apertar o botão de continuar, agr se for false ele não consegue
+    answerSelected: false,
 }
 
 
@@ -22,7 +25,6 @@ como dar uma dica pro usuario ou mudar
  o estado pra fim ou jogando 
 */
 const quizReducer = (state,action) =>{
-    console.log(state,action)
 
     /*
          type serve para executar uma ação 
@@ -49,6 +51,36 @@ const quizReducer = (state,action) =>{
             questions:reorder_questions,
         }
 
+        case 'Change_question':
+        const next_question = state.currentQuestion + 1
+        let endGame = false
+
+        if(!questions[next_question]){
+            endGame = true
+        }
+        return {
+            ...state,
+            currentQuestion: next_question,
+            //Se chagar no fim ele muda o estado, se não continua normal
+            gameStage:endGame ? stages[2]:state.gameStage,
+            answerSelected: false
+        }
+
+        case 'New_game':
+        return InitialStage
+
+        case 'Check_answer':
+        //se a resposta ja foi selecionada eu retorno o estado atual e não conto mais no score 
+        if(state.answerSelected) return state
+        const answer = action.payload.answer
+        const option = action.payload.option
+        let correctResposta = 0
+        if(answer === option) correctResposta = 1
+        return {
+            ...state,
+            score: state.score + correctResposta,
+            answerSelected: option,
+        }
         default:
         return state
     }

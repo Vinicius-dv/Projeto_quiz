@@ -14,7 +14,7 @@ const data = [
     {
         question: "Com qual instrução declaramos uma constante em JavaScript?",
         options: ["const", "let", "var", "define"],
-        resposta: "const",
+        answer: "const",
     },
     {
         question: "Qual dos tipos de dado a seguir não existe em JavaScript?",
